@@ -1,0 +1,26 @@
+what,kind,bundleId,bundleVersion,description,time
+locale,sysinfo,,,"en_US",1298173399121
+processors,sysinfo,,,"2",1298173399121
+java.runtime.name,sysinfo,,,"Java(TM) SE Runtime Environment",1298173399121
+java.runtime.version,sysinfo,,,"1.6.0_18-b07",1298173399121
+java.specification.name,sysinfo,,,"Java Platform API Specification",1298173399121
+java.specification.vendor,sysinfo,,,"Sun Microsystems Inc.",1298173399121
+java.specification.version,sysinfo,,,"1.6",1298173399121
+java.vendor,sysinfo,,,"Sun Microsystems Inc.",1298173399121
+java.version,sysinfo,,,"1.6.0_18",1298173399121
+java.vm.info,sysinfo,,,"mixed mode, sharing",1298173399121
+java.vm.name,sysinfo,,,"Java HotSpot(TM) Client VM",1298173399121
+java.vm.specification.name,sysinfo,,,"Java Virtual Machine Specification",1298173399121
+java.vm.specification.vendor,sysinfo,,,"Sun Microsystems Inc.",1298173399121
+java.vm.specification.version,sysinfo,,,"1.0",1298173399121
+java.vm.vendor,sysinfo,,,"Sun Microsystems Inc.",1298173399121
+java.vm.version,sysinfo,,,"16.0-b13",1298173399121
+started,bundle,org.eclipse.debug.core,3.5.0.v20090526-1600,"org.eclipse.debug.core",1298173401110
+started,bundle,org.eclipse.jdt.launching,3.5.0.v20090527,"org.eclipse.jdt.launching",1298173401128
+deactivated,workbench,org.eclipse.ui.workbench,3.5.1.M20090826-0800a,"",1298173403037
+started,bundle,org.eclipse.core.filesystem,1.2.0.v20090507,"org.eclipse.core.filesystem",1298173409028
+started,bundle,org.eclipse.jdt.apt.core,3.3.201.R35x_v20090818-0235,"org.eclipse.jdt.apt.core",1298173409735
+started,bundle,org.eclipse.jdt.apt.pluggable.core,1.0.201.R35x_v20090818-0225,"org.eclipse.jdt.apt.pluggable.core",1298173409773
+activated,workbench,org.eclipse.ui.workbench,3.5.1.M20090826-0800a,"",1298173410500
+started,bundle,org.eclipse.ltk.core.refactoring,3.5.0.v20090513-2000,"org.eclipse.ltk.core.refactoring",1298173413728
+started,bundle,org.eclipse.ltk.ui.refactoring,3.4.100.v20090604,"org.eclipse.ltk.ui.refactoring",1298173413730
