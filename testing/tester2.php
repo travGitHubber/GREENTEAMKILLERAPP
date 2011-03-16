@@ -1,19 +1,84 @@
 <?php
 //Global values in this file.
-$databasehost = "173.201.88.100";
+/**
+ * Current database host to be used in all the mysql connection.
+ * $conn = mysql_connect($databasehost, $databaseusername, $databasepassword);
+ */
+$databasehost = "173.201.88.100";		
+/**
+ * Current database name to be used in all the mysql connection.
+ * $conn = mysql_connect($databasehost, $databaseusername, $databasepassword);
+ */
 $databasename = "mis1105402314808";
+/**
+ * The database username to be used in all the mysql connection.
+ * $conn = mysql_connect($databasehost, $databaseusername, $databasepassword);
+ */
 $databaseusername ="mis1105402314808";
+/**
+ * The database username password to be used in all the mysql connection.
+ * $conn = mysql_connect($databasehost, $databaseusername, $databasepassword);
+ */
 $databasepassword = "G1980berlin";
+/**
+ * Character that is used by the csv file to represent end of a field.
+ * Used when parsing each field from each line of the csv file.
+ */
 $fieldseparator = ",";
-$lineseparator = "\n";
-$csvfile = "CleanedRAWCSV.csv";
+/**
+ * Character that is used by the csv file to represent end of line.
+ * Used when parsing each line out of the csv file.
+ */
+$lineseparator = "\n";				
+/**
+ * Current CSV file that is being reviewed.
+ * This is the file that will be parsed with this program.
+ */
+$csvfile = "CleanedRAWCSV.csv";	
+/**
+ * This is where the found fields from each CSV line are stored.
+ * Used in multiple functions of this program.
+ */
 $fieldsArray = array();
+/**
+ * This is where the found tables for the given mysql connection are stored.
+ */
 $tablesArray = array();
+/**
+ * This is where the found headers from the CSV are stored.
+ * This is used by multiple parts of this program.
+ */
 $headersArray = array();
-$inserterArray = array(array());
+
+//TODO
+$inserterArray = array(array());	// This is the inserterArray used for collecting database inserts.
+/**
+ * This is the database Array for holding the database structure.
+ * $databaseArray[$i] Is an Array of all the tables currently in the database. 
+ * Where $i is the number of the table being viewed.
+ * $databaseArray[$i][0] Is the name of the table being stored.
+ * $databaseArray[$i][$number} $number is the current table's field name starting at 1 
+ * and going till all the fields are represented in the table. 
+ */
 $databaseArray = array(array());
-$howManytables = 0; 
+/**
+ * Counter used for the number of tables in the $databasename.
+ */
+$howManytables = 0;
+/**
+ * Counter used for the number of headers found in the current CSV file.
+ */
 $foundHeaders = 0;
+/**
+ * Decides if tested echos responses will be shown.
+ * If $showEchos = false; All tested echos will not be shown.
+ * If $showEchos = true; All tested echos will be shown.
+ */
+$showEchos = false;
+
+/**
+ * This is some code that I am playing with at the moment.
+ */
 //-------------------------------------------------------------------------------------------------
 	
 // echo $csvcontent;
@@ -31,11 +96,11 @@ echo $linemysql . ' what the fuck dude';
 getHeaders($csvfile);
 getDatabaseTables($databasehost, $databaseusername, $databasepassword, $databasename);
 setupDatabasearray($databasehost, $databaseusername, $databasepassword, $databasename);
-echo '<br><b>' . count($tablesArray). " Tables in this Database </b><br><br>";
-show2dArray();
+if ($showEchos == True) echo '<br><b>' . count($tablesArray). " Tables in this Database </b><br><br>";
+if ($showEchos == True) show2dArray();
 thereplacer($databasehost, $databaseusername, $databasepassword);
 startSearching($databaseArray,$headersArray);
-//insertME($csvfile);
+insertME($csvfile);
 /**
  * Gets the headers from the csv file. Used later for data matching.
  * This pushes information into the $headersArray.
@@ -43,7 +108,7 @@ startSearching($databaseArray,$headersArray);
  */
 function getHeaders($csvfile)
 {
-	global $headersArray, $lineseparator, $fieldseparator;
+	global $headersArray, $showEchos, $lineseparator, $fieldseparator;
 	if(!file_exists($csvfile)) { echo "File not found. Make sure you specified the correct path.\n";	exit;}
 	$file = fopen($csvfile,"r");
 	if(!$file) { echo "Error opening data file.\n"; exit; }
@@ -63,7 +128,8 @@ function getHeaders($csvfile)
 		$line = str_replace("\r","",$line);
 		$line = str_replace("'","\'",$line);
 		$linearray = explode($fieldseparator,$line);
-		for($i =0; $i < count($linearray); $i++){ array_push($headersArray,$linearray[$i]); echo 'Header'.$i. ' is                 ' .$linearray[$i]. '<br>'; }
+		for($i =0; $i < count($linearray); $i++){ array_push($headersArray,$linearray[$i]);
+		if ($showEchos == True) echo 'Header'.$i. ' is ' .$linearray[$i]. '<br>'; }
 		} 
 	}
 }
@@ -102,14 +168,11 @@ function setupDatabasearray($databasehost, $databaseusername, $databasepassword,
 	{
 	$table = $tablesArray[$j];
 	getColumnNameInformation($databasehost, $databaseusername, $databasepassword, $databasename, $table);
-//	echo '<br>' .$table . ' table <br>';
-//	echo count($fieldsArray). " fieldsArray <br>";
 		for($i = 1; $i <= count($fieldsArray); $i++ )
 		{
 			$databaseArray[$j][0] = $table;
 			$databaseArray[$j][$i] = $fieldsArray[$i-1];
 		}
-//	foreach ($fieldsArray as $value) echo $value." ";
 	}
 }
 /**
@@ -162,14 +225,15 @@ for($i = 0; $i < mysql_num_fields($result); $i++)
  */
 function findColumn($databaseArray, $searchFor)
 {
-global $howManytables, $foundHeaders;
+global $howManytables, $foundHeaders, $showEchos;
 	for ($j = 0; $j < $howManytables; $j++)
 		{
 			for($i = 1; $i <= count($databaseArray[$j]); $i++ )
 			{
 			if (strcmp($searchFor, $databaseArray[$j][$i]) == 0)
-			{ echo '<br>'. $searchFor .' was found in table '
-			 . $databaseArray[$j][0] . ' column number ' . $i;
+			{ 
+			if ($showEchos == True){ echo '<br>'. $searchFor .' was found in table ' 
+			. $databaseArray[$j][0] . ' column number ' . $i; }
 			$foundHeaders++;
 			}
 			}
@@ -188,7 +252,7 @@ function startSearching($databaseArray,$headersArray)
 		$searchME = $headersArray[$joel];
 		findColumn($databaseArray, $searchME);
 	}
-	echo ' <br><br> We have found '. $foundHeaders. ' headers of the '. count($headersArray). ' headers
+	echo ' <br> We have found '. $foundHeaders. ' headers of the '. count($headersArray). ' headers
 	found in the file ' . $csvfile .'<br>';
 	echo 'This is ' .$foundHeaders / count($headersArray) * 100 . ' percent of all the 
 	headers in the ' .$csvfile . ' file where found in the database.';
@@ -201,7 +265,7 @@ function startSearching($databaseArray,$headersArray)
  */
 function thereplacer($databasehost, $databaseusername, $databasepassword)
 {
-	global $headersArray, $databasename;
+	global $headersArray, $databasename, $showEchos;
 	$conn = mysql_connect($databasehost, $databaseusername, $databasepassword);
 	if (!$conn) die('Could not connect: ' . mysql_error());
 	mysql_select_db($databasename);
@@ -210,12 +274,15 @@ function thereplacer($databasehost, $databaseusername, $databasepassword)
 		$result = mysql_query("SELECT csvHeader,tableField FROM columns WHERE csvHeader = '$headersArray[$i]'");
 		if (!$result) { echo 'Could not run query: ' . mysql_error(); exit; }
 		$row = mysql_fetch_row($result);
-		echo "<br><b> CSV Header $i is $headersArray[$i] </b>" ;
+		if ($showEchos == True) echo "<br><b> CSV Header $i is $headersArray[$i] </b>" ;
 		$headersArray[$i] = $row[1];
-		echo "<br><i> Table Header $i is $headersArray[$i] </i>" ;
+		if ($showEchos == True) echo "<br><i> Table Header $i is $headersArray[$i] </i>" ;
 	}
-	echo '<br>';
+	if ($showEchos == True) echo '<br>';
 }
+/**
+ * Going to be used to create the insert data from the CSV File
+ */
 function insertME($csvfile)
 {	
 global $headersArray,$lineseparator,$databasehost,$databaseusername,$databasepassword,$databasename,$fieldseparator, $databaseArray; 
