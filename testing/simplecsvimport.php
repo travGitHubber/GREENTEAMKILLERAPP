@@ -77,10 +77,10 @@ foreach(split($lineseparator,$csvcontent) as $line) {
 	************************************/
 	$line = str_replace("'","\'",$line);
 	/*************************************/
-	
+//	echo $line;
 	$linearray = explode($fieldseparator,$line);
-	echo $linearray[1] . '<br>';
-//	array_push ($linearray,3,4,5,6);
+	array_push ($linearray,3,4,5,6);
+	echo $linearray[4] . '<br>';
 	$linemysql = implode("','",$linearray);
 	if (strlen($linemysql) > 1)
 	{
