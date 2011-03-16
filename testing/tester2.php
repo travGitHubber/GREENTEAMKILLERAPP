@@ -91,13 +91,12 @@ $testingArray[0] = $testingArray2;
 $testingArray[1] = $testingArray3;
 $testingArray[2] = $testingArray4;
 $linemysql = implode(",",$testingArray[1]);
-echo $linemysql . ' what the fuck dude'; 
 */
 getHeaders($csvfile);
 getDatabaseTables($databasehost, $databaseusername, $databasepassword, $databasename);
 setupDatabasearray($databasehost, $databaseusername, $databasepassword, $databasename);
 if ($showEchos == True) echo '<br><b>' . count($tablesArray). " Tables in this Database </b><br><br>";
-if ($showEchos == True) show2dArray();
+if ($showEchos == false) show2dArray();
 thereplacer($databasehost, $databaseusername, $databasepassword);
 startSearching($databaseArray,$headersArray);
 insertME($csvfile);
@@ -188,8 +187,13 @@ function getDatabaseTables($databasehost, $databaseusername, $databasepassword, 
 global $tablesArray, $howManytables;
 $conn = mysql_connect($databasehost, $databaseusername, $databasepassword);
 $res = mysql_query("SHOW TABLES FROM $databasename");
-while($row = mysql_fetch_array($res, MYSQL_NUM)) array_push($tablesArray,$row[0]);
-$howManytables = count($tablesArray);
+while($row = mysql_fetch_array($res, MYSQL_NUM))
+	{ 
+	if($row[0] != 'columns'){
+	array_push($tablesArray,$row[0]);
+	$howManytables = count($tablesArray);
+	}
+	}
 }
 /**
  * Collects all the column names of a Table and puts them in the Fields Array
@@ -285,7 +289,8 @@ function thereplacer($databasehost, $databaseusername, $databasepassword)
  */
 function insertME($csvfile)
 {	
-global $headersArray,$lineseparator,$databasehost,$databaseusername,$databasepassword,$databasename,$fieldseparator, $databaseArray; 
+global $headersArray,$howManytables, $lineseparator, $databasehost, $databaseusername,
+$databasepassword, $databasename, $fieldseparator, $databaseArray, $inserterArray; 
 if(!file_exists($csvfile)) { echo "File not found. Make sure you specified the correct path.\n"; exit;}
 $file = fopen($csvfile,"r");
 
@@ -298,10 +303,12 @@ fclose($file);
 
 $con = @mysql_connect($databasehost,$databaseusername,$databasepassword) or die(mysql_error());
 @mysql_select_db($databasename) or die(mysql_error());
-echo 'what the hell';	
+echo '<BR>' .$headersArray[0].' what the hell headers';	
+echo '<br>' .$databaseArray[5][2].' what the hell database <br>';	
 $lines = 0;
 $queries = "";
 $linearray = array();
+$insertArray = $inserterArray;
 foreach(split($lineseparator,$csvcontent) as $line) 
 {
 	$lines++;
@@ -314,20 +321,51 @@ foreach(split($lineseparator,$csvcontent) as $line)
 	$line = str_replace("'","\'",$line);
 	/*************************************/
 	$linearray = explode($fieldseparator,$line);
-	for($test = 0; $test < count($headersArray) && $test == 0; $test++)
-	{
-		if(strcmp($headersArray[$test], $databaseArray[5][2]) == 0 ) echo " joel joel $linearray[$test] found in ". $databaseArray[5][0] ; 
-	}
 	
-	array_push ($linearray,3,4,5,6);
-	echo $linearray[4] . '<br>';   // what cell to add
-	$linemysql = implode("','",$linearray);
-	if (strlen($linemysql) > 1 && $lines >1) 
+	for($row = 0; $row < $howManytables && $lines == 1; $row++)
 	{
-	$query = "insert into $databasetable values('','$linemysql');";
-	$queries .= $query . "\n";
-	@mysql_query($query);
+		if ($databaseArray[$row][0] == 'columns');
+		for($column = 2; $column < count($databaseArray[$row]); $column++)
+		{
+			for($test = 0; $test < count($headersArray); $test++)
+			{			
+				if(strcmp($headersArray[$test], $databaseArray[$row][$column]) == 0 ) {
+				$inserterArray[$row][$column-2] = $linearray[$test]; 
+				echo $inserterArray[$row][$column-2] . "<br>";
+				}
+			}
+		}
+	} 
+	for($row = 0; $row < $howManytables && $lines > 1; $row++)
+	{
+		for($column = 2; $column < count($databaseArray[$row]); $column++)
+		{
+			for($test = 0; $test < count($headersArray); $test++)
+			{			
+				if(strcmp($headersArray[$test], $databaseArray[$row][$column]) == 0 ) {
+				$inserterArray[$row][$column-2] = $linearray[$test];
+				if (strcmp($inserterArray[$row][$column-2], "") == 0 ) {
+					$inserterArray[$row][$column-2] = NULL;
+					
+				} 
+				echo $inserterArray[$row][$column-2] . " joel <br>";
+				}
+			}
+		}
 	}
+	for($row = 0; $row < $howManytables; $row++)
+	{
+		if ($databaseArray[$row][0] == 'columns') ;
+		echo "row equal $row";
+		$linemysql = implode("','",$inserterArray[$row]);
+		if (strlen($linemysql) > 1 && $lines >1) 
+		{
+		$query = "insert into " .$databaseArray[$row][0] ." values(NULL,'$linemysql');";
+		$queries .= $query . "\n";
+		@mysql_query($query);
+		}
+	}
+	echo '<br>';
 }
 	$outputfile = "output.sql";
 
