@@ -1,0 +1,1 @@
+<?php echo "<Center>".$this->element('demoReportElement')."</Center>"; ?>

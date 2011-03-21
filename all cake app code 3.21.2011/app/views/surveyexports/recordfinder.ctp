@@ -1,0 +1,7 @@
+<?php
+
+$recordToEdit;
+
+debug($recordToEdit);
+
+?>
