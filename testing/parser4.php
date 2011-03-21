@@ -209,7 +209,6 @@ function csvParseFile($filename, $separator = "\n") {
 							//check 20
 							if($cellNumber==19) { //19 is really 20 due to 0 factor
 								$InformationVerified=checkStringLength($currentCell);
-								checkExperienceWithComputers($checkMe);
 								checkVerify($InformationVerified,$lineCount,$cellNumber);
 							}
 							//check 21

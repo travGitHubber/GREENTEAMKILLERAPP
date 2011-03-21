@@ -5,7 +5,7 @@ $link = mysql_connect('173.201.88.100', 'mis1105402314808', 'G1980berlin')
 echo 'Connected successfully';
 mysql_select_db('mis1105402314808') or die('Could not select database');
 
-$result = mysql_query("SELECT * FROM testing1", $link);
+$result = mysql_query("SELECT * FROM testing3", $link);
 $num_rows = mysql_num_rows($result);
 $num_fields = mysql_num_fields($result);
 

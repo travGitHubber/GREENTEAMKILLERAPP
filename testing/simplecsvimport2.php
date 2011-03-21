@@ -75,10 +75,10 @@ foreach(split($lineseparator,$csvcontent) as $line) {
 	/*************************************/
 	
 	$linearray = explode($fieldseparator,$line);
-//	for ($i = 1; $i <= count($linearray); $i++) 
-//	{
-   // echo $i;  
-//	}
+	for ($i = 1; $i <= count($linearray); $i++) 
+	{
+	 echo $i;  
+	}
 //	array_push ($linearray,3,4,5,6);
 	$linemysql = implode("','",$linearray);
 	
